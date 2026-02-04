@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Be My Valentine</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(#ffccd5, #ffe6f0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+#container {
+    text-align: center;
+    z-index: 2;
+}
+
+h1 {
+    color: #c4004b;
+}
+
+button {
+    font-size: 22px;
+    padding: 12px 35px;
+    margin: 15px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#yes {
+    background: #ff0055;
+    color: white;
+}
+
+#no {
+    background: #999;
+    position: absolute;
+}
+
+/* Ayyo */
+#ayyo {
+    position: absolute;
+    font-size: 22px;
+    display: none;
+    animation: fade 1s forwards;
+}
+
+@keyframes fade {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* NO CRACKER BLAST */
+.explode {
+    animation: explode 0.6s forwards;
+}
+
+@keyframes explode {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(2); }
+    100% { transform: scale(4); opacity: 0; }
+}
+
+/* Sparks */
+.spark {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: gold;
+    border-radius: 50%;
+    animation: sparkFly 0.8s forwards;
+}
+
+@keyframes sparkFly {
+    from { transform: translate(0,0); opacity: 1; }
+    to {
+        transform: translate(
+            calc(-100px + 200px * var(--x)),
+            calc(-100px + 200px * var(--y))
+        );
+        opacity: 0;
+    }
+}
+
+/* Dolls */
+#dolls {
+    display: none;
+    position: absolute;
+    bottom: 28%;
+    width: 100%;
+    text-align: center;
+    font-size: 90px;
+}
+
+#male {
+    position: relative;
+    left: -150px;
+    animation: maleMove 2s forwards;
+}
+#female {
+    position: relative;
+    right: -150px;
+    animation: femaleMove 2s forwards;
+}
+
+@keyframes maleMove { to { left: 0; } }
+@keyframes femaleMove { to { right: 0; } }
+
+/* Hearts */
+.heart {
+    position: absolute;
+    bottom: -20px;
+    animation: floatUp 4s linear forwards;
+}
+
+@keyframes floatUp {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-110vh); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="container">
+    <h1>Psycho Will you be my Valentine? ❤️</h1>
+    <button id="yes">YES</button>
+    <button id="no">NO</button>
+</div>
+
+<div id="ayyo">Ayyo 😳</div>
+
+<div id="dolls">
+    <span id="male">🧑</span>
+    <span>💋</span>
+    <span id="female">👩</span>
+</div>
+
+<audio id="crackerSound" src="cracker.mp3"></audio>
+<audio id="song" src="thallipogathe.mp3"></audio>
+
+<script>
+const yes = document.getElementById("yes");
+const no = document.getElementById("no");
+const ayyo = document.getElementById("ayyo");
+const cracker = document.getElementById("crackerSound");
+const song = document.getElementById("song");
+const dolls = document.getElementById("dolls");
+
+// NO runs FAST
+function moveNo() {
+    const x = Math.random() * 85;
+    const y = Math.random() * 85;
+    no.style.left = x + "vw";
+    no.style.top = y + "vh";
+
+    ayyo.style.left = (x+2) + "vw";
+    ayyo.style.top = (y+2) + "vh";
+    ayyo.style.display = "block";
+    setTimeout(() => ayyo.style.display="none", 700);
+}
+
+no.addEventListener("mouseover", moveNo);
+no.addEventListener("touchstart", moveNo);
+
+// Spark blast
+function sparkBlast(x, y) {
+    for (let i = 0; i < 25; i++) {
+        const s = document.createElement("div");
+        s.className = "spark";
+        s.style.left = x + "px";
+        s.style.top = y + "px";
+        s.style.setProperty("--x", Math.random());
+        s.style.setProperty("--y", Math.random());
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 800);
+    }
+}
+
+// YES pressed → NO CRACKER BLAST 💥
+yes.onclick = () => {
+    const rect = no.getBoundingClientRect();
+    cracker.play();
+
+    sparkBlast(rect.left + rect.width/2, rect.top + rect.height/2);
+    no.classList.add("explode");
+
+    setTimeout(() => no.style.display = "none", 600);
+    yes.style.display = "none";
+
+    setTimeout(() => {
+        dolls.style.display = "block";
+        song.play();
+        setInterval(() => {
+            const h = document.createElement("div");
+            h.className = "heart";
+            h.innerText = "❤️";
+            h.style.left = Math.random()*100 + "vw";
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 4000);
+        }, 300);
+    }, 700);
+};
+</script>
+
+</body>
+</html>
+
